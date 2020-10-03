@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 public class Student {
     enum Subject {SJL, MAT}
+
     private String firstName;
     private String lastName;
     private String code;
@@ -29,23 +30,18 @@ public class Student {
     public String getCode() {
         return code;
     }
-//TODO vymazat zbytocne metody
+
     public double getPointsSjl() {
         return pointsSjl;
     }
+
     public double getPointsMat() {
         return pointsMat;
     }
-    public void setPointsSjl(double pointsSjl) {
-        this.pointsSjl = pointsSjl;
-    }
-    public void setPointsMat(double pointsMat) {
-        this.pointsMat = pointsMat;
-    }
 
-    public void setPoints(double points, Subject subject){
-        if(subject == Subject.SJL) this.pointsSjl = points;
-        else if(subject == Subject.MAT) this.pointsMat = points;
+    public void setPoints(double points, Subject subject) {
+        if (subject == Subject.SJL) this.pointsSjl = points;
+        else if (subject == Subject.MAT) this.pointsMat = points;
     }
 
     @NonNull

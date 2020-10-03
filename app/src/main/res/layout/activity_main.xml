@@ -57,41 +57,51 @@
 
     <Switch
         android:id="@+id/switch1"
-        android:layout_width="163dp"
+        android:layout_width="100dp"
         android:layout_height="43dp"
         android:checked="false"
         android:showText="true"
-        android:text="Predmet"
         android:textOff="MAT"
         android:textOn="SJL"
         android:thumb="@drawable/switch_thumb"
         android:track="@drawable/switch_track"
         app:layout_constraintBottom_toTopOf="@+id/textViewStudent"
-        app:layout_constraintStart_toStartOf="@+id/textViewStudent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/buttonExport"
+        app:layout_constraintStart_toEndOf="@+id/buttonImport"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.493" />
 
     <EditText
         android:id="@+id/editText"
-        android:layout_width="286dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="156dp"
+        android:layout_width="185dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="252dp"
         android:hint="zadajte počet bodov"
         android:inputType="numberDecimal"
         android:singleLine="true"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/buttonSave"
-        app:layout_constraintEnd_toEndOf="@+id/surface_view"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/surface_view" />
 
     <Button
         android:id="@+id/buttonSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="252dp"
         android:text="save"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/surface_view"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/editText" />
+
+    <Button
+        android:id="@+id/buttonImport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Import"
+        app:layout_constraintBottom_toTopOf="@+id/textViewStudent"
+        app:layout_constraintStart_toStartOf="@+id/textViewStudent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
