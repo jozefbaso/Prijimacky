@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
@@ -26,8 +25,7 @@ import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 
-import java.io.File;
-import java.io.FileInputStream;
+
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -106,36 +104,26 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent,"Vyberte zoznam študentov"), 33);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == 33) {
-                String inputFile = data.getData().getPath();
-                System.out.println(inputFile);
-//                File myFile = new File(inputFile);
-//                FileInputStream fis = new FileInputStream(myFile);
-//
-//                // Finds the workbook instance for XLSX file
-//                XSSFWorkbook myWorkBook = new XSSFWorkbook(fis);
-//
-//                // Return first sheet from the XLSX workbook
-//                XSSFSheet mySheet = myWorkBook.getSheetAt(0);
-//
-//                // Process all the rows in current sheet
-//                for (Row row : mySheet) {
-//                    Student currentStudent = new Student(row.getCell(0).toString(), row.getCell(1).toString(), row.getCell(2).toString());
-//                    listOfStudents.addStudent(currentStudent);
-//                    System.out.println("Added student " + currentStudent.getFirstName() + " " + currentStudent.getLastName() + " with code: " + currentStudent.getCode());
-//                }
-            }
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (resultCode == RESULT_OK) {
+//            if (requestCode == 33) {
+//                String inputFile = Objects.requireNonNull(data.getData()).getPath();
+//                System.out.println(inputFile);
+////                try {
+////                    ExcelReadWrite.readExcel(listOfStudents,inputFile);
+////                } catch (IOException e) {
+////                    e.printStackTrace();
+////                }
+//            }
+//        }
+//    }
 
     private void loadStudents() {
         listOfStudents = new LinkedHashMap<>();
-        listOfStudents.put("A35F28Z", new Student("Janko", "Mrkvicka", "A35F28Z"));
-        listOfStudents.put("R45S77I", new Student("Anicka", "Dusicka", "R45S77I"));
+        listOfStudents.put("A35F28Z", new Student("Janko", "Mrkvicka", "A35F28Z", "-1", "-1"));
+        listOfStudents.put("R45S77I", new Student("Anicka", "Dusicka", "R45S77I", "-1", "-1"));
     }
 
     private void exportStudents() {
@@ -163,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void savePoints() {
         if (currentStudent != null) {
-            currentStudent.setPoints(Double.parseDouble(editText.getText().toString()), currentSubject);
+            currentStudent.setPoints(editText.getText().toString(), currentSubject);
             Toast.makeText(getApplicationContext(), "zapisane \n" + currentStudent.getFirstName() + " " + currentStudent.getLastName() + "\n" + editText.getText().toString() + " bodov\n" + currentSubject, Toast.LENGTH_SHORT).show();
             System.out.println("zapisane " + editText.getText().toString() + " bodov zo " + currentSubject + " pre studenta: " + currentStudent.getFirstName() + " " + currentStudent.getLastName());
         } else {
