@@ -1,27 +1,37 @@
 package com.jozefbaso.prijimackykody;
 
-
+import android.content.ContentProvider;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.net.Uri;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
+public class ReadWriteCsv {
 
-//public class ExcelReadWrite {
-//
-////    public static void readExcel(Map<String, Student> listOfStudents, String inputFile) throws IOException {
-////        File myFile = new File(inputFile);
-////        FileInputStream fis = new FileInputStream(myFile);
-////
-////        BufferedReader csvReader = new BufferedReader(new FileReader(inputFile));
-////        String row;
-////        while ((row = csvReader.readLine()) != null) {
-////            String[] data = row.split(",");
-////            listOfStudents.put(data[2], new Student(data[0], data[1], data[2]));
-////        }
-////        csvReader.close();
+    public static String FillPointsIfMissingInFile(String[] data, int index) {
+        if (data != null && index >= 0 && index < data.length) return data[index];
+        else return "-1";
+    }
 
-
+    public static void readCsv(Map<String, Student> listOfStudents, Uri inputFile, Context context) throws IOException {
+        try (InputStream inputStream = context.getContentResolver().openInputStream(inputFile);
+             BufferedReader csvReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8))) {
+            //System.out.println("------------file open------------");
+            String row;
+            while ((row = csvReader.readLine()) != null) {
+                String[] data = row.split(",");
+                Student s = new Student(data[0], data[1], data[2], FillPointsIfMissingInFile(data, 3), FillPointsIfMissingInFile(data, 4));
+                //System.out.println("reading: " + s.getFirstName() + " " + s.getLastName());
+                listOfStudents.put(data[2], s);
+                //System.out.println("saved to hashMap: " + listOfStudents.get(data[2]));
+            }
+        }
+    }
 
 
 //        // Finds the workbook instance for XLSX file
@@ -36,7 +46,7 @@ import java.util.Set;
 //            listOfStudents.put(row.getCell(2).toString(), currentStudent);
 //            System.out.println("Added student " + currentStudent.getFirstName() + " " + currentStudent.getLastName() + " with code: " + currentStudent.getCode());
 //        }
-//    }
+
 
 //    public static void writeExcel(Map<String, Student> listOfStudents, String outputFile) throws IOException {
 //        Workbook wb = new XSSFWorkbook();
@@ -73,4 +83,4 @@ import java.util.Set;
 //        wb.close();
 //    }
 
-//}
+}

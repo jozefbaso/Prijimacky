@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
@@ -32,13 +33,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.xml.datatype.Duration;
-
 public class MainActivity extends AppCompatActivity {
 
     private SurfaceView surfaceView;
     private CameraSource cameraSource;
-    private static final int REQUEST_CAMERA_PERMISSION = 201;
+    private static final int MY_PERMISSIONS_CAMERA_PERMISSION = 201;
+    private static final int MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 505;
+    private static final int MY_PERMISSIONS_READ_EXTERNAL_STORAGE = 504;
     private ToneGenerator toneGen1;
 
     private TextView scannedCode;
@@ -59,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initUiElements();
-        loadStudents();
+        listOfStudents = new LinkedHashMap<>();
+        //loadStudents();
         switchSubject();
     }
 
@@ -98,27 +100,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void importStudents() {
-        Intent intent = new Intent();
-        intent.setType("*/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent,"Vyberte zoznam študentov"), 33);
+        System.out.println("-----------------------------------------------------------------------------load button clicked");
+        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            Intent intent = new Intent();
+            intent.setType("*/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Vyberte zoznam študentov"), 33);
+        } else {
+            ActivityCompat.requestPermissions(MainActivity.this, new
+                    String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_READ_EXTERNAL_STORAGE);
+        }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (resultCode == RESULT_OK) {
-//            if (requestCode == 33) {
-//                String inputFile = Objects.requireNonNull(data.getData()).getPath();
-//                System.out.println(inputFile);
-////                try {
-////                    ExcelReadWrite.readExcel(listOfStudents,inputFile);
-////                } catch (IOException e) {
-////                    e.printStackTrace();
-////                }
-//            }
-//        }
-//    }
+    //reads csv file and fills map with students and codes
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 33) {
+                Uri inputFile = data.getData();
+                System.out.println("---------------------------------------------------------------" + inputFile);
+                try {
+                    ReadWriteCsv.readCsv(listOfStudents, inputFile, this);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
     private void loadStudents() {
         listOfStudents = new LinkedHashMap<>();
@@ -186,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                         cameraSource.start(surfaceView.getHolder());
                     } else {
                         ActivityCompat.requestPermissions(MainActivity.this, new
-                                String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+                                String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_CAMERA_PERMISSION);
                     }
 
                 } catch (IOException e) {

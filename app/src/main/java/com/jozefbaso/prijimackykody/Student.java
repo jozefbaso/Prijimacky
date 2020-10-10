@@ -12,8 +12,7 @@ public class Student {
     private String lastName;
     private String code;
     private Map<Subject, String> points;
-    private double pointsSjl;
-    private double pointsMat;
+
 
     public Student(String firstName, String lastName, String code, String sjl, String mat) {
         this.firstName = firstName;
@@ -22,8 +21,6 @@ public class Student {
         this.points = new LinkedHashMap<>();
         this.points.put(Subject.SJL, sjl);
         this.points.put(Subject.MAT, mat);
-//        this.pointsMat = -1;
-//        this.pointsSjl = -1;
     }
 
     public String getFirstName() {
@@ -38,25 +35,12 @@ public class Student {
         return code;
     }
 
-//    public double getPointsSjl() {
-//        return pointsSjl;
-//    }
-//
-//    public double getPointsMat() {
-//        return pointsMat;
-//    }
-
-//    public void setPoints(double points, Subject subject) {
-//        if (subject == Subject.SJL) this.pointsSjl = points;
-//        else if (subject == Subject.MAT) this.pointsMat = points;
-//    }
-
-    public String getPoints(Subject subject){
+    public String getPoints(Subject subject) {
         return this.points.get(subject);
     }
 
-    public void setPoints(String points, Subject subject){
-        this.points.put(subject,points);
+    public void setPoints(String points, Subject subject) {
+        this.points.put(subject, points);
     }
 
     @NonNull
