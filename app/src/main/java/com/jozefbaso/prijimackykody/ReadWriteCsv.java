@@ -5,6 +5,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 
+import com.google.android.gms.common.util.JsonUtils;
+
+import org.w3c.dom.ls.LSOutput;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -30,57 +34,27 @@ public class ReadWriteCsv {
                 listOfStudents.put(data[2], s);
                 //System.out.println("saved to hashMap: " + listOfStudents.get(data[2]));
             }
+            inputStream.close();
         }
     }
 
+    public static void writeCsv(Map<String, Student> listOfStudents, Uri outputFile, Context context) throws IOException {
+        String fileName = "documents/list of students.csv";
+        String dirName =  android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+        File myFile = new File(dirName, fileName);
 
-//        // Finds the workbook instance for XLSX file
-//        XSSFWorkbook myWorkBook = new XSSFWorkbook(fis);
-//
-//        // Return first sheet from the XLSX workbook
-//        XSSFSheet mySheet = myWorkBook.getSheetAt(0);
-//
-//        // Process all the rows in current sheet
-//        for (Row row : mySheet) {
-//            Student currentStudent = new Student(row.getCell(0).toString(), row.getCell(1).toString(), row.getCell(2).toString());
-//            listOfStudents.put(row.getCell(2).toString(), currentStudent);
-//            System.out.println("Added student " + currentStudent.getFirstName() + " " + currentStudent.getLastName() + " with code: " + currentStudent.getCode());
-//        }
-
-
-//    public static void writeExcel(Map<String, Student> listOfStudents, String outputFile) throws IOException {
-//        Workbook wb = new XSSFWorkbook();
-//        CreationHelper createHelper = wb.getCreationHelper();
-//        Sheet sheet = wb.createSheet("Sheet 1");
-//
-//        Row firstRow = sheet.createRow(0);
-//        firstRow.createCell(0).setCellValue("Meno");
-//        firstRow.createCell(1).setCellValue("Priezvisko");
-//        firstRow.createCell(2).setCellValue("SJL");
-//        firstRow.createCell(3).setCellValue("MAT");
-//
-//        Set<String> newRows = listOfStudents.keySet();
-//        int rowNum = sheet.getLastRowNum();
-//
-//        for (String code : newRows) {
-//            Row row = sheet.createRow(++rowNum);
-//            row.createCell(0).setCellValue(listOfStudents.get(code).getFirstName());
-//            row.createCell(1).setCellValue(listOfStudents.get(code).getLastName());
-//            row.createCell(2).setCellValue(listOfStudents.get(code).getCode());
-//            row.createCell(3).setCellValue(listOfStudents.get(code).getPointsSjl());
-//            row.createCell(4).setCellValue(listOfStudents.get(code).getPointsMat());
-//        }
-//
-//        // open an OutputStream to save written data into Excel file
-//        // Write the output to a file
-//        try (OutputStream fileOut = new FileOutputStream(outputFile)) {
-//            wb.write(fileOut);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        // Close workbook
-//        wb.close();
-//    }
-
+        try {
+            FileWriter fileWriter = new FileWriter(myFile);
+            fileWriter.append("meno,priezvisko,kód,SJL,MAT" + "\n");
+            Set<String> newRows = listOfStudents.keySet();
+            for (String barcode : newRows) {
+                fileWriter.write(Objects.requireNonNull(listOfStudents.get(barcode)).toString() + "\n");
+            }
+            fileWriter.flush();
+            fileWriter.close();
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+    }
 }

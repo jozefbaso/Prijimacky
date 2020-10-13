@@ -46,7 +46,7 @@ public class Student {
     @NonNull
     @Override
     public String toString() {
-        return this.firstName + " " + this.lastName + " " + this.code + " " + this.points.get(Subject.SJL) + " " + this.points.get(Subject.MAT);
+        return this.firstName + "," + this.lastName + "," + this.code + "," + this.points.get(Subject.SJL) + "," + this.points.get(Subject.MAT);
     }
 }
 

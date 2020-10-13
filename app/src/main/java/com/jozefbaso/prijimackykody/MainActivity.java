@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_READ_EXTERNAL_STORAGE = 504;
     private ToneGenerator toneGen1;
 
+    private Uri csvFile;
     private TextView scannedCode;
     private TextView scannedStudent;
     private EditText editText;
@@ -80,7 +81,11 @@ public class MainActivity extends AppCompatActivity {
         exportBtn = findViewById(R.id.buttonExport);
         exportBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                exportStudents();
+                try {
+                    exportStudents();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
         importBtn = findViewById(R.id.buttonImport);
@@ -118,10 +123,10 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == 33) {
-                Uri inputFile = data.getData();
-                System.out.println("---------------------------------------------------------------" + inputFile);
+                this.csvFile = data.getData();
+                System.out.println("---------------------------------------------------------------" + csvFile);
                 try {
-                    ReadWriteCsv.readCsv(listOfStudents, inputFile, this);
+                    ReadWriteCsv.readCsv(listOfStudents, csvFile, this);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -129,13 +134,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadStudents() {
-        listOfStudents = new LinkedHashMap<>();
-        listOfStudents.put("A35F28Z", new Student("Janko", "Mrkvicka", "A35F28Z", "-1", "-1"));
-        listOfStudents.put("R45S77I", new Student("Anicka", "Dusicka", "R45S77I", "-1", "-1"));
-    }
+//    private void loadStudents() {
+//        listOfStudents = new LinkedHashMap<>();
+//        listOfStudents.put("A35F28Z", new Student("Janko", "Mrkvicka", "A35F28Z", "-1", "-1"));
+//        listOfStudents.put("R45S77I", new Student("Anicka", "Dusicka", "R45S77I", "-1", "-1"));
+//    }
 
-    private void exportStudents() {
+    private void exportStudents() throws IOException {
+        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            System.out.println("------------------PERMISSION----------------------");
+            ReadWriteCsv.writeCsv(listOfStudents,csvFile,MainActivity.this);
+        } else {
+            System.out.println("----------------NO-PERMISSION------------------------");
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE);
+        }
+
+
         Set<String> newRows = listOfStudents.keySet();
         System.out.println("===================================");
         for (String barcode : newRows) {
